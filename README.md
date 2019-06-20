@@ -6,9 +6,10 @@ We'll setup our own container along side our other pods to serve as a target for
 
 ![Diagram](doc/images/kube-audit-log.png)
 
-The problem can be broken into two parts
+The problem can be broken into three steps
 1) The simple HTTP server that processes the data
-2) The deployment of the container and configuration of the webhook
+2) The deployment of the container 
+3) Configuration of the webhook
 
 ## Step 1 - simple HTTP server
 
@@ -35,7 +36,7 @@ We can do the build via a Makefile. The build target assumes that you are logged
 
 
 ```
-make build
+$ make build
 ```
 
 ## Step 2 - deployment
@@ -45,12 +46,12 @@ The deployment is quite straight forward. We want to create pod based on the ima
 This is all captured in the [YAML file](kube-audit.yaml.tmpl), the Makefile uses [envsubst](https://linux.die.net/man/1/envsubst) to configure the YAML file with your `NAMESPACE` environment variable.
 
 ```
-make deploy
+$ make deploy
 ```
 
 ## Step 3 - Configure webhook
 
-In the previous step (deployment) will have dumped the services in your IKS cluster. One of these is the newly created *kube-audit* service.
+In the previous step (deployment) will have dumped the services in your IKS cluster. One of these is the newly created **kube-audit** service.
 
 ```
 NAME         TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)          AGE
@@ -60,12 +61,11 @@ kube-audit   ClusterIP   172.21.255.26   <none>        80/TCP           1m
 We need to combine this IP address with the name of the cluster and issue two commands:
 
 ```
-ibmcloud ks apiserver-config-set audit-webhook <cluster_name_or_ID> --remoteServer http://172.21.255.26
-ibmcloud ks apiserver-refresh --cluster <cluster_name_or_ID>
+$ ibmcloud ks apiserver-config-set audit-webhook <cluster_name_or_ID> --remoteServer http://172.21.255.26
+$ ibmcloud ks apiserver-refresh --cluster <cluster_name_or_ID>
 ```
 
-The first one sets the webhook, and the second initiates a refresh which will enable the newly set webhook.
-
+The first one sets the webhook, and the second initiates a refresh which will enable the newly set webhook. Refreshing the API Server can take a few minutes, now is probably a great time to go for a coffee.
 
 
 
