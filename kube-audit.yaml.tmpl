@@ -10,7 +10,7 @@ spec:
     spec:
       containers:
         - name: kube-audit
-          image: 'us.icr.io/$(NAMESPACE)/kube-audit:latest'
+          image: 'us.icr.io/${NAMESPACE}/kube-audit:latest'
           ports:
             - containerPort: 3000
 

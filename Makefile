@@ -22,6 +22,7 @@ build:
 # Deploy
 #
 deploy:
+	envsubst < kube-audit.yaml.tmpl > kube-audit.yaml
 	kubectl create -f kube-audit.yaml
 	kubectl get services
 	@echo "**IMPORTANT** Make note of the IP address of the 'kube-audit' service"
