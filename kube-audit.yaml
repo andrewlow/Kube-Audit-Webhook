@@ -1,0 +1,31 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: kube-audit
+spec:
+  template:
+    metadata:
+      labels:
+        app: kube-audit
+    spec:
+      containers:
+        - name: kube-audit
+          image: 'us.icr.io/$(NAMESPACE)/kube-audit:latest'
+          ports:
+            - containerPort: 3000
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kube-audit
+spec:
+  selector:
+    app: kube-audit
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 3000
+  type: ClusterIP
+
+
